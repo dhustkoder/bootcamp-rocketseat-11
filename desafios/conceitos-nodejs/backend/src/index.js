@@ -15,6 +15,33 @@ app.get('/', (request, response) => {
 });
 
 
+// projects resource
+app.get('/projects', (request, response) => {
+    console.log('get projects called');
+    return response.send(['project 1', 'project 2']);
+});
+
+app.post('/projects', (request, response) => {
+    console.log('create project called');
+    return response.send(['project 1', 'project 2']);
+});
+
+app.put('/projects/:id', (request, response) => {
+    console.log('update project called');
+    return response.send(['project 1', 'project 2']);
+});
+
+app.delete('/projects/:id', (request, response) => {
+    console.log('delete project called');
+    return response.send(['project 1', 'project 2']);
+})
+
+
+
+
+
+
+
 app.listen(3333, () => {
     console.log('server is up 👍👍');
 });
