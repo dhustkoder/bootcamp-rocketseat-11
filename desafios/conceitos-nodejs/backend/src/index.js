@@ -1,17 +1,33 @@
+
+
+
 /*
-* main http methods
-* GET   -> fetch  info from backend
-* POST  -> create info on backend
-* PUT   -> full update of some resource
-* PATCH -> partial update of some resource
+main http methods
+    GET   -> fetch  info from backend
+    POST  -> create info on backend
+    PUT   -> full update of some resource
+    PATCH -> partial update of some resource
 */
 
 /*
-* main restful parameter types
-* 
-* query: filters, pagination
-* path:  specify the resource 
-* body:  body of data for the endpoint to inspect
+main restful parameter types
+ 
+    query: filters, pagination
+    path:  specify the resource 
+    body:  body of data for the endpoint to inspect
+*/
+
+
+/*
+Middleware: 
+    Middleware functions are functions that have access to the request object (req), the response object (res), and the next middleware function in the application’s request-response cycle. The next middleware function is commonly denoted by a variable named next.
+
+    Middleware functions can perform the following tasks:
+
+    Execute any code.
+    Make changes to the request and the response objects.
+    End the request-response cycle.
+    Call the next middleware function in the stack.
 */
 
 
@@ -20,12 +36,27 @@ const { request } = require('express');
 const express = require('express');
 const { uuid } = require('uuidv4');
 
+
+
+const logMiddleware = (request, response, next) => {
+    const {method, url} = request;
+    const label = `[${method}] -> ${url}`;
+    console.time(label);
+    next();
+    console.timeEnd(label);
+}
+
+
+
 const app = express();
 
 
 
+app.use(logMiddleware);
+app.use(express.json());
 
-app.use(express.json())
+
+
 
 
 const projects = [];
