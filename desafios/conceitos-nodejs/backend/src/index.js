@@ -39,7 +39,10 @@ app.get('/', (request, response) => {
 // projects resource
 app.get('/projects', (request, response) => {
     console.log('get projects called with query params: ', request.query);
-    return response.send(projects);
+
+    const { title } = request.query;
+
+    return response.send(title ? projects.filter(p => p.title.includes(title)) : projects);
 });
 
 app.post('/projects', (request, response) => {
