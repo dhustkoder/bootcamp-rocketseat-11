@@ -52,7 +52,7 @@ const app = express();
 
 
 
-app.use(logMiddleware);
+// app.use(logMiddleware);
 app.use(express.json());
 
 
@@ -68,48 +68,63 @@ app.get('/', (request, response) => {
 
 
 // projects resource
-app.get('/projects', (request, response) => {
-    console.log('get projects called with query params: ', request.query);
+app.get('/repositories', (request, response) => {
+    // console.log('get projects called with query params: ', request.query);
 
-    const { title } = request.query;
-
-    return response.send(title ? projects.filter(p => p.title.includes(title)) : projects);
+    return response.send(projects);
 });
 
-app.post('/projects', (request, response) => {
-    console.log('create project called with body: ', request.body);
-    const { title, owner } = request.body;
-    const project = { title, owner, id: uuid() };
+app.post('/repositories', (request, response) => {
+    // console.log('create project called with body: ', request.body);
+    const { title, url, techs } = request.body;
+    const project = { title, url, techs, likes: 0, id: uuid() };
     projects.push(project);
     return response.send(project);
 });
 
-app.put('/projects/:id', (request, response) => {
+app.put('/repositories/:id', (request, response) => {
     const { params, body } = request;
-    console.log('update project called with: ', {params, body});
+    // console.log('update project called with: ', {params, body});
    
-    const { title, owner } = body;
+    const { title, url, techs } = body;
 
     const project = {
-        title,
-        owner,
         id: params.id
     };
-
 
     const index = projects.findIndex(p => p.id == project.id);
 
     if (index == -1)
         return response.status(400).send({error: 'Project not found'});
     
-    projects[index] = project;
+    if (title)
+        projects[index].title = title;
+    if (url)
+        projects[index].url = url;
+    if (techs)
+        projects[index].techs = techs;
 
-    return response.send(project);
+    console.log('put project result: ', projects[index]);
+
+    return response.send(projects[index]);
 });
 
-app.delete('/projects/:id', (request, response) => {
+app.post("/repositories/:id/like", (request, response) => {
+    const {params} = request;
+    
+    const index = projects.findIndex(p => p.id == params.id);
+
+    if (index == -1)
+        return response.status(400).send();
+    
+    projects[index].likes += 1;
+
+    return response.send(projects[index]);
+});
+
+app.delete('/repositories/:id', (request, response) => {
     const {id} = request.params;
-    console.log('delete project called with path params: ', request.params);
+    // console.log('delete project called with path params: ', request.params);
 
     const index = projects.findIndex(p => p.id == id);
     if (index == -1)
@@ -126,6 +141,6 @@ app.delete('/projects/:id', (request, response) => {
 
 
 
-app.listen(3333, () => {
-    console.log('server is up 👍👍');
-});
+
+
+module.exports = app;
